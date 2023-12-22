@@ -25,6 +25,10 @@ fun Application.module() {
                 call.respondText { getPlanetForTemp(java.lang.Double.parseDouble(temp)).toString() }
             }
         }
+
+        get("/") {
+            call.respondText { "Pls use /get-the-star-wars-planets-mapping-for-the-current-temperature-completely-and-utterly-accurate?temp={temp}" }
+        }
     }
 }
 
