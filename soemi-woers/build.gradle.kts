@@ -7,6 +7,21 @@ plugins {
     id("io.ktor.plugin") version "2.3.7"
 }
 
+ktor {
+    docker {
+        localImageName.set("soemi-woers")
+        imageTag.set("0.0.1")
+        jreVersion.set(JavaVersion.VERSION_11)
+        portMappings.set(listOf(
+            io.ktor.plugin.features.DockerPortMapping(
+                80,
+                8080,
+                io.ktor.plugin.features.DockerPortMappingProtocol.TCP
+            )
+        ))
+    }
+}
+
 group = "ch.soemiweather"
 version = "0.0.1"
 
