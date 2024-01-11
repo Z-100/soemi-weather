@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: load-balancer
+  labels:
+    soemi-woeb: soemi-woeb
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      nodePort: 31000
+  selector:
+    soemi-woeb: soemi-woeb
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: soemi-woeb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      soemi-woeb: soemi-woeb
+  template:
+    metadata:
+      labels:
+        soemi-woeb: soemi-woeb
+    spec:
+      containers:
+        - name: soemi-woeb
+          image: soemi-woeb:latest
+          ports:
+            - containerPort: 80

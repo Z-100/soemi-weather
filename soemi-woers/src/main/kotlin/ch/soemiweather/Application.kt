@@ -9,7 +9,7 @@ import java.io.File
 import java.io.FileNotFoundException
 
 fun main() {
-    embeddedServer(Netty, port = 42069, host = "0.0.0.0", module = Application::module)
+    embeddedServer(Netty, port = 8089, host = "0.0.0.0", module = Application::module)
         .start(wait = true)
 }
 
