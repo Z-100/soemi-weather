@@ -4,10 +4,10 @@ metadata:
   name: soemi-woers-ingress
 spec:
   rules:
-    - host: soemi-woers.ch
+    - host: localhost
     - http:
         paths:
-          - path: /soemi-woers
+          - path: /api
             pathType: Prefix
             backend:
               service:

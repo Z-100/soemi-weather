@@ -5,16 +5,16 @@ metadata:
 spec:
   selector:
     matchLabels:
-      soemi-woers: soemi-woers
+      app: soemi-woers
   replicas: 1
   template:
     metadata:
       labels:
-        soemi-woers: soemi-woers
+        app: soemi-woers
     spec:
       containers:
         - name: soemi-woers
-          image: local/soemi-woers:latest
+          image: z100/soemi-woers:0.0.1
           ports:
             - containerPort: 8089
           livenessProbe:

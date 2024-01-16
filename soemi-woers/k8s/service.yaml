@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: soemi-woers
   labels:
-    soemi-woers: soemi-woers
+    app: soemi-woers
 spec:
   type: NodePort
   selector:
-    soemi-woers: soemi-woers
+    app: soemi-woers
   ports:
     - protocol: TCP
       port: 8089
