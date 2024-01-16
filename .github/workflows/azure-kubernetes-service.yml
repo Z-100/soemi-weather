@@ -31,8 +31,8 @@ name: Build and deploy an app to AKS
 
 on:
 # Enable once pipeline fixed
-#  push:
-#    branches: ["main"]
+  push:
+    branches: ["main"]
   workflow_dispatch:
 
 env:
@@ -63,7 +63,11 @@ jobs:
       # Builds and pushes an image up to your Azure Container Registry
       - name: Build and push image to ACR
         run: |
-          az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.RESOURCE_GROUP }} .
+          docker build -t docker.io/z100/soemi-woers:0.0.1 /soemi-weather/soemi-woeb/
+          docker build -t docker.io/z100/soemi-woers:0.0.1 /soemi-weather/soemi-woers/
+          docker push z100/soemi-woeb:0.0.1
+          docker push z100/soemi-woers:0.0.1
+#          az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.RESOURCE_GROUP }} .
   deploy:
     permissions:
       actions: read
