@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: soemi-woers-ingress
+spec:
+  rules:
+    - host: soemi-woers.ch
+    - http:
+        paths:
+          - path: /soemi-woers
+            pathType: Prefix
+            backend:
+              service:
+                name: soemi-woers
+                port:
+                  number: 8089
