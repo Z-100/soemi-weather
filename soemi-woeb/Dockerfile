@@ -1,4 +1,8 @@
-FROM nginx:stable:alpine
-COPY ./build /usr/share/nginx/html
-# > docker build -t uname/soemi-woeb
-# > docker push uname/soemi-woeb:latest
+FROM node:14-alpine
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+EXPOSE 3000
+CMD ["npm", "start"]
