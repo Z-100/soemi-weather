@@ -30,9 +30,8 @@
 name: Build and deploy an app to AKS
 
 on:
-# Enable once pipeline fixed
-#  push:
-#    branches: ["main"]
+  push:
+    branches: ["main"]
   workflow_dispatch:
 
 env:
@@ -61,9 +60,27 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       # Builds and pushes an image up to your Azure Container Registry
-      - name: Build and push image to ACR
+      - name: Build and push docker images
         run: |
-          az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.RESOURCE_GROUP }} .
+          echo "Login to dockerhub"
+          docker login -u ${{ secrets.DOCKERHUB_U }} -p ${{ secrets.DOCKERHUB_T }}
+          
+          echo "Building images"
+          docker build -t z100/soemi-woeb:0.0.1 ./soemi-woeb
+          docker build -t z100/soemi-woers:0.0.1 ./soemi-woers
+          
+          echo "Pushing images"
+          docker push z100/soemi-woeb:0.0.1 ./soemi-woeb
+          docker push z100/soemi-woers:0.0.1 ./soemi-woers
+
+#          echo "Building images"
+#          docker build -t your-acr.azurecr.io/soemi-woeb:0.0.1 ./soemi-woeb
+#          docker build -t your-acr.azurecr.io/soemi-woers:0.0.1 ./soemi-woers
+#
+#          echo "Pushing images"
+#          docker push your-acr.azurecr.io/soemi-woeb:0.0.1
+#          docker push your-acr.azurecr.io/soemi-woers:0.0.1
+
   deploy:
     permissions:
       actions: read
@@ -83,26 +100,8 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # Use kubelogin to configure your kubeconfig for Azure auth
-      - name: Set up kubelogin for non-interactive login
-        uses: azure/use-kubelogin@v1
-        with:
-          kubelogin-version: 'v0.0.25'
-
-      # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
-      - name: Get K8s context
-        uses: azure/aks-set-context@v3
-        with:
-          resource-group: ${{ env.RESOURCE_GROUP }}
-          cluster-name: ${{ env.CLUSTER_NAME }}
-          admin: 'false'
-          use-kubelogin: 'true'
-
-      # Deploys application based on given manifest file
-      - name: Deploys application
-        uses: Azure/k8s-deploy@v4
-        with:
-          action: deploy
-          manifests: ${{ env.DEPLOYMENT_MANIFEST_PATH }}
-          images: |
-            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
+      # Deploys the images to AKS
+      - name: Deploy microservices to AKS
+        run: |
+          az aks kubectl apply -f ./soemi-woeb/k8s
+          az aks kubectl apply -f ./soemi-woers/k8s
