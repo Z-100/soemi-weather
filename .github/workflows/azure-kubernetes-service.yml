@@ -70,8 +70,8 @@ jobs:
           docker build -t z100/soemi-woers:0.0.1 ./soemi-woers
           
           echo "Pushing images"
-          docker push z100/soemi-woeb:0.0.1 ./soemi-woeb
-          docker push z100/soemi-woers:0.0.1 ./soemi-woers
+          docker push z100/soemi-woeb:0.0.1
+          docker push z100/soemi-woers:0.0.1
 
 #          echo "Building images"
 #          docker build -t your-acr.azurecr.io/soemi-woeb:0.0.1 ./soemi-woeb
