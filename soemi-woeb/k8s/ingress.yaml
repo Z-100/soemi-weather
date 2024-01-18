@@ -4,7 +4,6 @@ metadata:
   name: soemi-woeb-ingress
 spec:
   rules:
-    - host: localhost
     - http:
         paths:
           - path: /

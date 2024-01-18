@@ -4,7 +4,6 @@ metadata:
   name: soemi-woers-ingress
 spec:
   rules:
-    - host: localhost
     - http:
         paths:
           - path: /api

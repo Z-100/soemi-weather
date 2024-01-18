@@ -1,37 +1,8 @@
-# This workflow will build and push an application to a Azure Kubernetes Service (AKS) cluster when you push your code
-#
-# This workflow assumes you have already created the target AKS cluster and have created an Azure Container Registry (ACR)
-# The ACR should be attached to the AKS cluster
-# For instructions see:
-#   - https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough-portal
-#   - https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal
-#   - https://learn.microsoft.com/en-us/azure/aks/cluster-container-registry-integration?tabs=azure-cli#configure-acr-integration-for-existing-aks-clusters
-#   - https://github.com/Azure/aks-create-action
-#
-# To configure this workflow:
-#
-# 1. Set the following secrets in your repository (instructions for getting these can be found at https://docs.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-cli%2Clinux):
-#    - AZURE_CLIENT_ID
-#    - AZURE_TENANT_ID
-#    - AZURE_SUBSCRIPTION_ID
-#
-# 2. Set the following environment variables (or replace the values below):
-#    - AZURE_CONTAINER_REGISTRY (name of your container registry / ACR)
-#    - RESOURCE_GROUP (where your cluster is deployed)
-#    - CLUSTER_NAME (name of your AKS cluster)
-#    - CONTAINER_NAME (name of the container image you would like to push up to your ACR)
-#    - IMAGE_PULL_SECRET_NAME (name of the ImagePullSecret that will be created to pull your ACR image)
-#    - DEPLOYMENT_MANIFEST_PATH (path to the manifest yaml for your deployment)
-#
-# For more information on GitHub Actions for Azure, refer to https://github.com/Azure/Actions
-# For more samples to get started with GitHub Action workflows to deploy to Azure, refer to https://github.com/Azure/actions-workflow-samples
-# For more options with the actions used below please refer to https://github.com/Azure/login
-
-name: Build and deploy an app to AKS
+name: Build and deploy soemi-weather microservices to AKS
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   workflow_dispatch:
 
 env:
@@ -42,16 +13,16 @@ env:
   DEPLOYMENT_MANIFEST_PATH: ""
 
 jobs:
-  buildImage:
+  build-images:
     permissions:
       contents: read
       id-token: write
     runs-on: ubuntu-latest
     steps:
-      # Checks out the repository this file is in
-      - uses: actions/checkout@v3
 
-      # Logs in with your Azure credentials
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Azure login
         uses: azure/login@v1.4.6
         with:
@@ -59,40 +30,34 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # Builds and pushes an image up to your Azure Container Registry
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v2.0
+
       - name: Build and push docker images
         run: |
           echo "Login to dockerhub"
           docker login -u ${{ secrets.DOCKERHUB_U }} -p ${{ secrets.DOCKERHUB_T }}
-          
+
           echo "Building images"
           docker build -t z100/soemi-woeb:0.0.1 ./soemi-woeb
           docker build -t z100/soemi-woers:0.0.1 ./soemi-woers
-          
+
           echo "Pushing images"
           docker push z100/soemi-woeb:0.0.1
           docker push z100/soemi-woers:0.0.1
 
-#          echo "Building images"
-#          docker build -t your-acr.azurecr.io/soemi-woeb:0.0.1 ./soemi-woeb
-#          docker build -t your-acr.azurecr.io/soemi-woers:0.0.1 ./soemi-woers
-#
-#          echo "Pushing images"
-#          docker push your-acr.azurecr.io/soemi-woeb:0.0.1
-#          docker push your-acr.azurecr.io/soemi-woers:0.0.1
-
-  deploy:
+  deploy-services:
     permissions:
       actions: read
       contents: read
       id-token: write
     runs-on: ubuntu-latest
-    needs: [buildImage]
+    needs: [ build-images ]
     steps:
-      # Checks out the repository this file is in
-      - uses: actions/checkout@v3
 
-      # Logs in with your Azure credentials
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Azure login
         uses: azure/login@v1.4.6
         with:
@@ -100,8 +65,14 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # Deploys the images to AKS
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v2.0
+
       - name: Deploy microservices to AKS
         run: |
-          az aks kubectl apply -f ./soemi-woeb/k8s
-          az aks kubectl apply -f ./soemi-woers/k8s
+          echo "Deploying services"
+          kubectl apply -f ./soemi-woeb/k8s --validate=false
+          kubectl apply -f ./soemi-woers/k8s --validate=false
+
+          echo "Get soemi-woeb public ingress"
+          kubectl get ingress soemi-woeb-ingress -o jsonpath='{.spec.rules[0].host}{"{.spec.rules[0].http.paths[0].path}"'
