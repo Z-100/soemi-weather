@@ -4,7 +4,8 @@ metadata:
   name: soemi-woeb-ingress
 spec:
   rules:
-    - http:
+#    - host: sömi-weather.ch
+     - http:
         paths:
           - path: /
             pathType: Exact

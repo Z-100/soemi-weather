@@ -6,7 +6,7 @@ function App() {
     const [planet, setPlanet] = useState(null)
 
     const handleRestCall = () => {
-        fetch(`https://localhost/soemi-woers/get-the-star-wars-planets-mapping-for-the-current-temperature-completely-and-utterly-accurate?temp=${location}`)
+        fetch(`https://soemi-woers:8089/soemi-woers/get-the-star-wars-planets-mapping-for-the-current-temperature-completely-and-utterly-accurate?temp=${location}`)
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
