@@ -44,7 +44,7 @@ jobs:
           echo "Login to dockerhub"
 #          docker login -u ${{ secrets.DOCKERHUB_U }} -p ${{ secrets.DOCKERHUB_T }}
           
-          echo "Pushing images"
+#          echo "Pushing images"
 #          docker push z100/soemi-woeb:0.0.1
 #          docker push z100/soemi-woers:0.0.1
 
