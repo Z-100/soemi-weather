@@ -76,11 +76,9 @@ jobs:
       - name: Set kubectl context
         run: kubectl config use-context ${{ secrets.CLUSTER_NAME }}
 
-      - name: Setup SP
-        run: az ad sp create-for-rbac --name "APIM" --scope /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.RESOURCE_GROUP }} --role Contributor --json-auth
-
       - name: Deploy microservices to AKS
         run: |
           echo "Deploying services"
+          kubectl get pods
           kubectl apply -f ./soemi-woeb/k8s --validate=false
           kubectl apply -f ./soemi-woers/k8s --validate=false
