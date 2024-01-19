@@ -68,6 +68,12 @@ jobs:
       - name: Setup kubectl
         uses: azure/setup-kubectl@v2.0
 
+      - name: Set AKS credentials
+        run: az aks get-credentials --resource-group ${{ secrets.RESOURCE_GROUP }} --name ${{ secrets.CLUSTER_NAME }} --overwrite-existing
+
+      - name: Check kubectl context
+        run: kubectl config current-context
+
       - name: Deploy microservices to AKS
         run: |
           echo "Deploying services"
