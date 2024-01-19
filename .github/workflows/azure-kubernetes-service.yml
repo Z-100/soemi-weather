@@ -80,5 +80,7 @@ jobs:
         run: |
           echo "Deploying services"
           kubectl get pods
+          kubectl delete -f ./soemi-woeb/k8s --validate=false
+          kubectl delete -f ./soemi-woers/k8s --validate=false
           kubectl apply -f ./soemi-woeb/k8s --validate=false
           kubectl apply -f ./soemi-woers/k8s --validate=false
