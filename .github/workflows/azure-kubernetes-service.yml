@@ -57,9 +57,6 @@ jobs:
     needs: [ build-images ]
     steps:
 
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
       - name: Azure login
         uses: azure/login@v1.4.6
         with:
@@ -80,7 +77,7 @@ jobs:
         run: |
           echo "Deploying services"
           kubectl get pods
-          kubectl delete -f ./soemi-woeb/k8s --validate=false
-          kubectl delete -f ./soemi-woers/k8s --validate=false
-          kubectl apply -f ./soemi-woeb/k8s --validate=false
-          kubectl apply -f ./soemi-woers/k8s --validate=false
+          kubectl delete -f ./soemi-woeb/k8s
+          kubectl delete -f ./soemi-woers/k8s
+          kubectl apply -f ./soemi-woeb/k8s
+          kubectl apply -f ./soemi-woers/k8s
