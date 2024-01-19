@@ -6,7 +6,7 @@ spec:
   rules:
     - http:
         paths:
-          - path: /
+          - path: soeminetes-dns-axl0alut.hcp.germanywestcentral.azmk8s.io
             pathType: Exact
             backend:
               service:
