@@ -57,6 +57,9 @@ jobs:
     needs: [ build-images ]
     steps:
 
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Azure login
         uses: azure/login@v1.4.6
         with:
