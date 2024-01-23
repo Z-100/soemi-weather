@@ -1,5 +1,6 @@
 package ch.soemiweather
 
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -14,7 +15,11 @@ import java.io.FileNotFoundException
 
 fun main() {
     embeddedServer(Netty, port = 8089) {
-        install(CORS)
+        install(CORS) {
+            methods.add(HttpMethod.Get)
+            allowCredentials = true
+            hosts.add("*")
+        }
         routing {
             misc()
             getTheStarWarsPlanetsMappingForTheCurrentTemperatureCompletelyAndUtterlyAccurate()
