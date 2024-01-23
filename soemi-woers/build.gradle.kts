@@ -5,21 +5,7 @@ val logback_version: String by project
 plugins {
     kotlin("jvm") version "1.9.21"
     id("io.ktor.plugin") version "2.3.7"
-}
-
-ktor {
-    docker {
-        localImageName.set("soemi-woers")
-        imageTag.set("0.0.1")
-        jreVersion.set(JavaVersion.VERSION_11)
-        portMappings.set(listOf(
-            io.ktor.plugin.features.DockerPortMapping(
-                80,
-                8089,
-                io.ktor.plugin.features.DockerPortMappingProtocol.TCP
-            )
-        ))
-    }
+    kotlin("plugin.serialization") version "1.5.31"
 }
 
 group = "ch.soemiweather"
@@ -37,5 +23,7 @@ dependencies {
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-server-netty-jvm")
     implementation("ch.qos.logback:logback-classic:$logback_version")
+    implementation("io.ktor:ktor-server-cors:$ktor_version")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
     testImplementation("io.ktor:ktor-server-tests-jvm")
 }

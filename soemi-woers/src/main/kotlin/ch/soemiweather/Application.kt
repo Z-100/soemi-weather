@@ -3,13 +3,18 @@ package ch.soemiweather
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.encodeToJsonElement
 import java.io.File
 import java.io.FileNotFoundException
 
 fun main() {
     embeddedServer(Netty, port = 8089) {
+        install(CORS)
         routing {
             misc()
             getTheStarWarsPlanetsMappingForTheCurrentTemperatureCompletelyAndUtterlyAccurate()
@@ -23,9 +28,9 @@ fun Route.getTheStarWarsPlanetsMappingForTheCurrentTemperatureCompletelyAndUtter
         val temp = call.parameters["temp"]
 
         if (temp.isNullOrBlank()) {
-            call.respondText(funnySecretPlanet().toString())
+            call.respondText(funnySecretPlanet().json())
         } else {
-            call.respondText { getPlanetForTemp(java.lang.Double.parseDouble(temp)).toString() }
+            call.respondText { getPlanetForTemp(java.lang.Double.parseDouble(temp)).json() }
         }
     }
 }
@@ -55,8 +60,11 @@ fun fromResource(uri: String) =
 fun funnySecretPlanet() =
     Planet(69420, "Yogurt", "https://uploads.dailydot.com/2018/07/yoda-star-wars-meme.jpg?auto=compress&fm=pjpg")
 
-data class Planet(
+@Serializable
+class Planet(
     val temp: Int,
     val name: String,
     val image: String,
-)
+) {
+    fun json() = Json.encodeToJsonElement(this).toString()
+}
