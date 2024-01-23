@@ -9,7 +9,7 @@ spec:
 #    - host: sömi-weather.ch
      - http:
         paths:
-          - path: /
+          - path: /*
             pathType: Exact
             backend:
               service:
