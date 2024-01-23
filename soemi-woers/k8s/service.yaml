@@ -5,7 +5,7 @@ metadata:
   labels:
     app: soemi-woers
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: soemi-woers
   ports:

@@ -6,10 +6,10 @@ metadata:
     app: soemi-woeb
 spec:
   type: LoadBalancer
+  selector:
+    app: soemi-woeb
   ports:
     - port: 3000
       targetPort: 3000
       protocol: TCP
       nodePort: 31000
-  selector:
-    app: soemi-woeb
