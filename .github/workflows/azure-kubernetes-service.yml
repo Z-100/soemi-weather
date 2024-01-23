@@ -36,17 +36,17 @@ jobs:
       - name: Build docker images
         run: |
           echo "Building images"
-#          docker build -t z100/soemi-woeb:0.0.1 ./soemi-woeb
-#          docker build -t z100/soemi-woers:0.0.1 ./soemi-woers
+          docker build -t z100/soemi-woeb:0.0.1 ./soemi-woeb
+          docker build -t z100/soemi-woers:0.0.1 ./soemi-woers
 
       - name: Push docker images
         run: |
           echo "Login to dockerhub"
-#          docker login -u ${{ secrets.DOCKERHUB_U }} -p ${{ secrets.DOCKERHUB_T }}
-#
-#          echo "Pushing images"
-#          docker push z100/soemi-woeb:0.0.1
-#          docker push z100/soemi-woers:0.0.1
+          docker login -u ${{ secrets.DOCKERHUB_U }} -p ${{ secrets.DOCKERHUB_T }}
+
+          echo "Pushing images"
+          docker push z100/soemi-woeb:0.0.1
+          docker push z100/soemi-woers:0.0.1
 
   deploy-services:
     permissions:
