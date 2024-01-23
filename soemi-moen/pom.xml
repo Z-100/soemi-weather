@@ -31,17 +31,10 @@
       <artifactId>camunda-bpm-spring-boot-starter</artifactId>
       <version>7.16.0</version> <!-- Use the version corresponding to your Camunda version -->
     </dependency>
-    <dependency>
-      <artifactId>maven-war-plugin</artifactId>
-      <version>2.4</version>
-      <configuration>
-          <failOnMissingWebXml>false</failOnMissingWebXml>
-      </configuration>
-    </dependency>
   </dependencies>
 
   <build>
-    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (maybe moved to parent pom) -->
       <plugins>
         <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
         <plugin>
@@ -81,6 +74,14 @@
         <plugin>
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.0.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>3.3.1</version> <!-- Use the latest version -->
+          <configuration>
+            <!-- Configuration options, if needed -->
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
