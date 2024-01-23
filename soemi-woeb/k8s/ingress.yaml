@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: soemi-woeb-ingress
   annotations:
-    ingressClassName: "nginx"
+    ingressClassName: "k8s.io/ingress-nginx"
 spec:
   rules:
 #    - host: sömi-weather.ch
