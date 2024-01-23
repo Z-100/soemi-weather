@@ -2,6 +2,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: soemi-woers-ingress
+  annotations:
+    ingressClassName: "k8s.io/ingress-nginx"
 spec:
   rules:
     - http:
