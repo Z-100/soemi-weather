@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: soemi-woers
+spec:
+  selector:
+    matchLabels:
+      app: soemi-woers
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: soemi-woers
+    spec:
+      containers:
+        - name: soemi-woers
+          image: z100/soemi-woers:0.0.1
+          ports:
+            - containerPort: 8089
+          livenessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 8089
+            initialDelaySeconds: 15
+            timeoutSeconds: 1

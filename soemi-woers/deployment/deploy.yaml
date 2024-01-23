@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: soemi-woers
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: soemi-woers
+  template:
+    metadata:
+      labels:
+        app: soemi-woers
+        version: c
+    spec:
+      containers:
+        - name: soemi-woers
+          image: soemi-woers-0.0.1:latest
+          env:
+            - name: HOST
+              value: 0.0.0.0

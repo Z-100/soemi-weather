@@ -1,5 +1,6 @@
 package ch.soemiweather
 
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -9,11 +10,17 @@ import java.io.File
 import java.io.FileNotFoundException
 
 fun main() {
-    embeddedServer(Netty, port = 42069, host = "0.0.0.0", module = Application::module)
+    embeddedServer(Netty, port = 8089, host = "0.0.0.0", module = Application::module)
         .start(wait = true)
 }
 
 fun Application.module() {
+    intercept(ApplicationCallPipeline.Fallback) {
+        if (call.isHandled) return@intercept
+        val status = call.response.status() ?: HttpStatusCode.NotFound
+        call.respond(status)
+    }
+
     routing {
         get("/get-the-star-wars-planets-mapping-for-the-current-temperature-completely-and-utterly-accurate") {
 
@@ -28,6 +35,10 @@ fun Application.module() {
 
         get("/") {
             call.respondText { "Pls use /get-the-star-wars-planets-mapping-for-the-current-temperature-completely-and-utterly-accurate?temp={temp}" }
+        }
+
+        get("/healthcheck") {
+            call.respond("")
         }
     }
 }
