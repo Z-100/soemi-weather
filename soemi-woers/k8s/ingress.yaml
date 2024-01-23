@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: soemi-woers-ingress
   annotations:
-    kubernetes.io/ingress.class: "nginx"
+    ingressClassName: "nginx"
 spec:
   rules:
     - http:
