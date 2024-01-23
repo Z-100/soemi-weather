@@ -6,6 +6,7 @@
 
   <groupId>com.mycompany.app</groupId>
   <artifactId>soemi-moen</artifactId>
+  <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
 
   <name>soemi-moen</name>
@@ -29,6 +30,13 @@
       <groupId>org.camunda.bpm.springboot</groupId>
       <artifactId>camunda-bpm-spring-boot-starter</artifactId>
       <version>7.16.0</version> <!-- Use the version corresponding to your Camunda version -->
+    </dependency>
+    <dependency>
+      <artifactId>maven-war-plugin</artifactId>
+      <version>2.4</version>
+      <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+      </configuration>
     </dependency>
   </dependencies>
 
