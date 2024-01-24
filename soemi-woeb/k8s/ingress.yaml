@@ -19,7 +19,7 @@ spec:
                   number: 3000
     - host: api.xn--smi-weather-rfb.ch
       http:
-        - paths:
+        paths:
           - path: /
             pathType: Prefix
             backend:
