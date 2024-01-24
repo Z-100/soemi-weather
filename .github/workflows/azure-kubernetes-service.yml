@@ -55,6 +55,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Get Short Commit SHA
+        run: |
+          echo "COMMIT_SHA_SHORT=$(echo ${{ github.sha }} | cut -c1-7)"
+          echo "COMMIT_SHA_SHORT=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
+
       - name: Populate deployment.yaml with vars
         run: |
           sed -i "s|\$IMAGE_TAG|${{ env.COMMIT_SHA_SHORT }}|g" ./soemi-woeb/k8s/deployment.yaml
