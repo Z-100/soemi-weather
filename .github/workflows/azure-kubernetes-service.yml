@@ -59,6 +59,9 @@ jobs:
         run: |
           sed -i "s|\$IMAGE_TAG|${{ env.COMMIT_SHA_SHORT }}|g" ./soemi-woeb/k8s/deployment.yaml
           sed -i "s|\$IMAGE_TAG|${{ env.COMMIT_SHA_SHORT }}|g" ./soemi-woers/k8s/deployment.yaml
+          cat ./soemi-woeb/k8s/deployment.yaml
+          echo "---"
+          cat ./soemi-woers/k8s/deployment.yaml
 
       - name: Azure login
         uses: azure/login@v1.4.6
