@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: soemi-woers
-          image: z100/soemi-woers:0.0.3
+          image: z100/soemi-woers:0.0.4
           ports:
             - containerPort: 8089
           livenessProbe:
