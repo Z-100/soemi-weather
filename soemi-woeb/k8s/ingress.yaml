@@ -10,7 +10,7 @@ spec:
     - host: xn--smi-weather-rfb.ch
       http:
         paths:
-          - path: /(.*)
+          - path: /
             pathType: Prefix
             backend:
               service:
@@ -18,7 +18,7 @@ spec:
                 port:
                   number: 3000
           - path: /api
-            pathType: Exact
+            pathType: Prefix
             backend:
               service:
                 name: soemi-woers
