@@ -17,13 +17,3 @@ spec:
                 name: soemi-woeb
                 port:
                   number: 3000
-    - host: api.xn--smi-weather-rfb.ch
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: soemi-woers
-                port:
-                  number: 8089
