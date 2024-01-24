@@ -86,3 +86,4 @@ jobs:
           echo "Deploying services"
           kubectl replace --force -f ./soemi-woeb/k8s
           kubectl replace --force -f ./soemi-woers/k8s
+          kubectl get pods

@@ -14,9 +14,6 @@ spec:
     spec:
       containers:
         - name: soemi-woeb
-          image: z100/soemi-woeb
-          env:
-            - name: SHORT_COMMIT_SHA
-              value: "${{ env.COMMIT_SHA_SHORT }}"
+          image: z100/soemi-woeb:${COMMIT_SHA_SHORT}
           ports:
             - containerPort: 3000
