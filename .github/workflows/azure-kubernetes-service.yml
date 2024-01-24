@@ -41,8 +41,8 @@ jobs:
       - name: Build docker images
         run: |
           echo "Building images"
-          docker build -t z100/soemi-woeb@${{ env.COMMIT_SHA_SHORT }}" ./soemi-woeb
-          docker build -t z100/soemi-woers@${{ env.COMMIT_SHA_SHORT }}" ./soemi-woers
+          docker build -t z100/soemi-woeb:${{ env.COMMIT_SHA_SHORT }} ./soemi-woeb
+          docker build -t z100/soemi-woers:${{ env.COMMIT_SHA_SHORT }} ./soemi-woers
 
       - name: Push docker images
         run: |
@@ -50,8 +50,8 @@ jobs:
           docker login -u ${{ secrets.DOCKERHUB_U }} -p ${{ secrets.DOCKERHUB_T }}
 
           echo "Pushing images"
-          docker push z100/soemi-woeb@${{ env.COMMIT_SHA_SHORT }}"
-          docker push z100/soemi-woers@${{ env.COMMIT_SHA_SHORT }}"
+          docker push z100/soemi-woeb:${{ env.COMMIT_SHA_SHORT }}
+          docker push z100/soemi-woers:${{ env.COMMIT_SHA_SHORT }}
 
   deploy-services:
     permissions:
