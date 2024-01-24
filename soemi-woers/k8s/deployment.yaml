@@ -3,10 +3,10 @@ kind: Deployment
 metadata:
   name: soemi-woers
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: soemi-woers
-  replicas: 1
   template:
     metadata:
       labels:
