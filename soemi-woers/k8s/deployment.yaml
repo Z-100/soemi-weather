@@ -14,7 +14,10 @@ spec:
     spec:
       containers:
         - name: soemi-woers
-          image: z100/soemi-woers:0.0.4
+          image: z100/soemi-woers
+          env:
+            - name: SHORT_COMMIT_SHA
+              value: "${{ env.COMMIT_SHA_SHORT }}"
           ports:
             - containerPort: 8089
           livenessProbe:

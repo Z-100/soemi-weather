@@ -23,6 +23,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Get Short Commit SHA
+        run: |
+          echo "Short Commit SHA: ${{ github.sha::7 }}"
+          echo "COMMIT_SHA_SHORT=${{ github.sha::7 }}" >> $GITHUB_ENV
+
       - name: Azure login
         uses: azure/login@v1.4.6
         with:
@@ -36,8 +41,8 @@ jobs:
       - name: Build docker images
         run: |
           echo "Building images"
-          docker build -t z100/soemi-woeb:0.0.4 ./soemi-woeb
-          docker build -t z100/soemi-woers:0.0.4 ./soemi-woers
+          docker build -t z100/soemi-woeb:${{ env.COMMIT_SHA_SHORT }}" ./soemi-woeb
+          docker build -t z100/soemi-woers:${{ env.COMMIT_SHA_SHORT }}" ./soemi-woers
 
       - name: Push docker images
         run: |
@@ -45,8 +50,8 @@ jobs:
           docker login -u ${{ secrets.DOCKERHUB_U }} -p ${{ secrets.DOCKERHUB_T }}
 
           echo "Pushing images"
-          docker push z100/soemi-woeb:0.0.4
-          docker push z100/soemi-woers:0.0.4
+          docker push z100/soemi-woeb:${{ env.COMMIT_SHA_SHORT }}"
+          docker push z100/soemi-woers:${{ env.COMMIT_SHA_SHORT }}"
 
   deploy-services:
     permissions:
