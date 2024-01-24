@@ -25,8 +25,8 @@ jobs:
 
       - name: Get Short Commit SHA
         run: |
-          echo "Short Commit SHA: ${{ github.sha::7 }}"
-          echo "COMMIT_SHA_SHORT=${{ github.sha::7 }}" >> $GITHUB_ENV
+          echo "COMMIT_SHA_SHORT=$(echo ${{ github.sha }} | cut -c1-7)"
+          echo "COMMIT_SHA_SHORT=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
 
       - name: Azure login
         uses: azure/login@v1.4.6
