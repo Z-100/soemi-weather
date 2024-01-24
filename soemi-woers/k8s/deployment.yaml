@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: soemi-woers
-          image: z100/soemi-woers:${COMMIT_SHA_SHORT}
+          image: z100/soemi-woers:$IMAGE_TAG
           ports:
             - containerPort: 8089
           livenessProbe:
