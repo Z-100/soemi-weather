@@ -79,8 +79,8 @@ jobs:
       - name: Deploy microservices to AKS
         run: |
           echo "Deploying services"
-          kubectl get pods
-          kubectl delete -f ./soemi-woeb/k8s
-          kubectl delete -f ./soemi-woers/k8s
+          kubectl delete -f ./soemi-woeb/k8s || true
+          kubectl delete -f ./soemi-woers/k8s || true
+          
           kubectl apply -f ./soemi-woeb/k8s
           kubectl apply -f ./soemi-woers/k8s
