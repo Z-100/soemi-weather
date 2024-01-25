@@ -10,8 +10,10 @@ import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
-import java.io.File
+import java.io.BufferedReader
 import java.io.FileNotFoundException
+import java.io.InputStreamReader
+import java.nio.charset.StandardCharsets.UTF_8
 
 fun main() {
     embeddedServer(Netty, port = 8089) {
@@ -52,15 +54,21 @@ fun Route.misc() {
 
 fun getPlanetForTemp(temp: Double): Planet {
 
-    val planets = File(fromResource("/planets.csv")).readLines()
+    val planets = getFileContent("planets.csv")
         .map { it.split(";") }
         .map { Planet(Integer.parseInt(it[0]), it[1], it[2]) }
 
     return planets.first { it.temp == (5 * Math.round(temp / 5)).toInt() }
 }
 
-fun fromResource(uri: String) =
-    object {}.javaClass.getResource(uri)?.toURI() ?: throw FileNotFoundException("$uri not found")
+fun getFileContent(uri: String): List<String> {
+    val stream = Thread.currentThread().contextClassLoader.getResourceAsStream(uri)
+        ?: throw FileNotFoundException("$uri not found")
+
+    InputStreamReader(stream, UTF_8).use {
+        return BufferedReader(InputStreamReader(stream)).readLines()
+    }
+}
 
 fun funnySecretPlanet() =
     Planet(69420, "Yogurt", "https://uploads.dailydot.com/2018/07/yoda-star-wars-meme.jpg?auto=compress&fm=pjpg")
