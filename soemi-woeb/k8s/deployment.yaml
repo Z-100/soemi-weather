@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: soemi-woeb
-          image: z100/soemi-woeb:0.0.1
+          image: z100/soemi-woeb:$IMAGE_TAG
           ports:
             - containerPort: 3000

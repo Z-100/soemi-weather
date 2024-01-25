@@ -1,10 +1,14 @@
 package ch.soemiweather
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Test
 
 class ApplicationKtTest {
 
+    /**
+     * Very necessary. Trust me
+     */
     @Test
     fun `Test getPlanetForTemp delivers correct planet`() {
 
@@ -20,9 +24,16 @@ class ApplicationKtTest {
         assertEquals("Sullust", sullust.name)
         assertEquals("Hoth", hoth.name)
         assertEquals("Kashyyyk", kashyyyk.name)
-
         assertEquals("Jakku", jakku.name)
         assertEquals("Naboo", naboo.name)
         assertEquals("Takodana", takodana.name)
+
+        assertNotNull(mustafar.image)
+        assertNotNull(sullust.image)
+        assertNotNull(hoth.image)
+        assertNotNull(kashyyyk.image)
+        assertNotNull(jakku.image)
+        assertNotNull(naboo.image)
+        assertNotNull(takodana.image)
     }
 }

@@ -6,15 +6,10 @@ function App() {
     const [planet, setPlanet] = useState(null)
 
     const handleRestCall = () => {
-        fetch(`https://soemi-woers:8089/soemi-woers/get-the-star-wars-planets-mapping-for-the-current-temperature-completely-and-utterly-accurate?temp=${location}`)
+        fetch(`http://sömi-weather.ch/api/get-the-star-wars-planets-mapping-for-the-current-temperature-completely-and-utterly-accurate?temp=${location}`)
             .then((response) => response.json())
-            .then((data) => {
-                console.log(data);
-                setPlanet(data)
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+            .then((data) => setPlanet(data))
+            .catch((error) => console.error(error));
     };
 
     return (
@@ -25,9 +20,20 @@ function App() {
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
             />
-            <button onClick={handleRestCall}>Get Weather</button>
-            <p>Planet name: {planet?.name}</p>
+            <button onClick={handleRestCall}>Search</button>
+            {planet !== null ? <Planet planet={planet}/> : <p>Please search for a location.</p>}
         </div>
+    );
+}
+
+export function Planet({ planet }) {
+    const {name, image} = planet
+
+    return (
+        <>
+            <h1>Name: {name}</h1>
+            <img src={image} alt="Star Wars Planet"/>
+        </>
     );
 }
 

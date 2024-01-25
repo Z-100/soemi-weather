@@ -23,21 +23,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Azure login
-        uses: azure/login@v1.4.6
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Setup kubectl
-        uses: azure/setup-kubectl@v2.0
+      - name: Get Short Commit SHA
+        run: |
+          echo "COMMIT_SHA_SHORT=$(echo ${{ github.sha }} | cut -c1-7)"
+          echo "COMMIT_SHA_SHORT=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
 
       - name: Build docker images
         run: |
           echo "Building images"
-          docker build -t z100/soemi-woeb:0.0.1 ./soemi-woeb
-          docker build -t z100/soemi-woers:0.0.1 ./soemi-woers
+          docker build -t z100/soemi-woeb:${{ env.COMMIT_SHA_SHORT }} ./soemi-woeb
+          docker build -t z100/soemi-woers:${{ env.COMMIT_SHA_SHORT }} ./soemi-woers
 
       - name: Push docker images
         run: |
@@ -45,8 +40,8 @@ jobs:
           docker login -u ${{ secrets.DOCKERHUB_U }} -p ${{ secrets.DOCKERHUB_T }}
 
           echo "Pushing images"
-          docker push z100/soemi-woeb:0.0.1
-          docker push z100/soemi-woers:0.0.1
+          docker push z100/soemi-woeb:${{ env.COMMIT_SHA_SHORT }}
+          docker push z100/soemi-woers:${{ env.COMMIT_SHA_SHORT }}
 
   deploy-services:
     permissions:
@@ -60,6 +55,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Get Short Commit SHA
+        run: |
+          echo "COMMIT_SHA_SHORT=$(echo ${{ github.sha }} | cut -c1-7)"
+          echo "COMMIT_SHA_SHORT=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
+
+      - name: Populate deployment.yaml with vars
+        run: |
+          sed -i "s|\$IMAGE_TAG|${{ env.COMMIT_SHA_SHORT }}|g" ./soemi-woeb/k8s/deployment.yaml
+          sed -i "s|\$IMAGE_TAG|${{ env.COMMIT_SHA_SHORT }}|g" ./soemi-woers/k8s/deployment.yaml
+
       - name: Azure login
         uses: azure/login@v1.4.6
         with:
@@ -71,16 +76,15 @@ jobs:
         uses: azure/setup-kubectl@v2.0
 
       - name: Set AKS credentials
-        run: az aks get-credentials --resource-group ${{ secrets.RESOURCE_GROUP }} --name ${{ secrets.CLUSTER_NAME }} --overwrite-existing
+        run: |
+          az aks get-credentials --resource-group ${{ secrets.RESOURCE_GROUP }} --name ${{ secrets.CLUSTER_NAME }} --overwrite-existing
 
       - name: Set kubectl context
-        run: kubectl config use-context ${{ secrets.CLUSTER_NAME }}
+        run: |
+          kubectl config use-context ${{ secrets.CLUSTER_NAME }}
 
       - name: Deploy microservices to AKS
         run: |
           echo "Deploying services"
-          kubectl get pods
-          kubectl delete -f ./soemi-woeb/k8s
-          kubectl delete -f ./soemi-woers/k8s
-          kubectl apply -f ./soemi-woeb/k8s
-          kubectl apply -f ./soemi-woers/k8s
+          kubectl replace --force -f ./soemi-woeb/k8s
+          kubectl replace --force -f ./soemi-woers/k8s

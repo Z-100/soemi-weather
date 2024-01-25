@@ -5,10 +5,11 @@ metadata:
   labels:
     app: soemi-woers
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: soemi-woers
   ports:
     - protocol: TCP
       port: 8089
+      targetPort: 8089
       name: http

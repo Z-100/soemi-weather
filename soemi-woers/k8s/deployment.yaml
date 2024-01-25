@@ -3,10 +3,10 @@ kind: Deployment
 metadata:
   name: soemi-woers
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: soemi-woers
-  replicas: 1
   template:
     metadata:
       labels:
@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: soemi-woers
-          image: z100/soemi-woers:0.0.1
+          image: z100/soemi-woers:$IMAGE_TAG
           ports:
             - containerPort: 8089
           livenessProbe:
