@@ -25,7 +25,6 @@ jobs:
 
       - name: Get Short Commit SHA
         run: |
-          echo "COMMIT_SHA_SHORT=$(echo ${{ github.sha }} | cut -c1-7)"
           echo "COMMIT_SHA_SHORT=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
 
       - name: Build docker images
@@ -33,6 +32,7 @@ jobs:
           echo "Building images"
           docker build -t z100/soemi-woeb:${{ env.COMMIT_SHA_SHORT }} ./soemi-woeb
           docker build -t z100/soemi-woers:${{ env.COMMIT_SHA_SHORT }} ./soemi-woers
+          docker build -t z100/soemi-proexy:${{ env.COMMIT_SHA_SHORT }} ./soemi-proexy
 
       - name: Push docker images
         run: |
@@ -42,6 +42,7 @@ jobs:
           echo "Pushing images"
           docker push z100/soemi-woeb:${{ env.COMMIT_SHA_SHORT }}
           docker push z100/soemi-woers:${{ env.COMMIT_SHA_SHORT }}
+          docker push z100/soemi-proexy:${{ env.COMMIT_SHA_SHORT }}
 
   deploy-services:
     permissions:
@@ -57,13 +58,13 @@ jobs:
 
       - name: Get Short Commit SHA
         run: |
-          echo "COMMIT_SHA_SHORT=$(echo ${{ github.sha }} | cut -c1-7)"
           echo "COMMIT_SHA_SHORT=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
 
       - name: Populate deployment.yaml with vars
         run: |
           sed -i "s|\$IMAGE_TAG|${{ env.COMMIT_SHA_SHORT }}|g" ./soemi-woeb/k8s/deployment.yaml
           sed -i "s|\$IMAGE_TAG|${{ env.COMMIT_SHA_SHORT }}|g" ./soemi-woers/k8s/deployment.yaml
+          sed -i "s|\$IMAGE_TAG|${{ env.COMMIT_SHA_SHORT }}|g" ./soemi-proexy/k8s/deployment.yaml
 
       - name: Azure login
         uses: azure/login@v1.4.6
@@ -88,3 +89,4 @@ jobs:
           echo "Deploying services"
           kubectl replace --force -f ./soemi-woeb/k8s
           kubectl replace --force -f ./soemi-woers/k8s
+          kubectl replace --force -f ./soemi-proexy/k8s
