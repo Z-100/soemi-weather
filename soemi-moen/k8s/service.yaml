@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: soemi-moen
+  labels:
+    app: soemi-moen
+spec:
+  type: ClusterIP
+  selector:
+    app: soemi-moen
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: v
+      name: http
