@@ -87,6 +87,7 @@ jobs:
       - name: Deploy microservices to AKS
         run: |
           echo "Deploying services"
+          kubectl replace --force -f ./soemi-moen/k8s
+          kubectl replace --force -f ./soemi-proexy/k8s
           kubectl replace --force -f ./soemi-woeb/k8s
           kubectl replace --force -f ./soemi-woers/k8s
-          kubectl replace --force -f ./soemi-proexy/k8s
