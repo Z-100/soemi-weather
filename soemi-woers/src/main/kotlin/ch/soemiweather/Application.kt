@@ -15,6 +15,9 @@ import java.io.FileNotFoundException
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets.UTF_8
 
+const val MAX_TEMP = 55
+const val MIN_TEMP = -90
+
 fun main() {
     embeddedServer(Netty, port = 8089) {
         install(CORS) {
@@ -58,7 +61,10 @@ fun getPlanetForTemp(temp: Double): Planet {
         .map { it.split(";") }
         .map { Planet(Integer.parseInt(it[0]), it[1], it[2]) }
 
-    return planets.first { it.temp == (5 * Math.round(temp / 5)).toInt() }
+    val planet = planets.firstOrNull { it.temp == 5 * Math.round(temp / 5).toInt() }
+        ?: planets.first { if (temp > 0) it.temp == MAX_TEMP else it.temp == MIN_TEMP }
+
+    return planet
 }
 
 fun getFileContent(uri: String): List<String> {

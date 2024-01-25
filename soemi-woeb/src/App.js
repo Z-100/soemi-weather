@@ -27,12 +27,12 @@ function App() {
 }
 
 export function Planet({ planet }) {
-    const {name, img} = planet
+    const {name, image} = planet
 
     return (
         <>
             <h1>Name: {name}</h1>
-            <img src={img} alt="Star Wars Planet"/>
+            <img src={image} alt="Star Wars Planet"/>
         </>
     );
 }
