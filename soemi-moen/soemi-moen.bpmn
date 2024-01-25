@@ -5,24 +5,12 @@
   </bpmn:collaboration>
   <bpmn:process id="Process_13h4fbi" isExecutable="true" camunda:historyTimeToLive="180">
     <bpmn:sequenceFlow id="Flow_1gvdgxc" sourceRef="Activity_02bbqmi" targetRef="Event_1ne92b0" />
-    <bpmn:startEvent id="StartEvent_1" name="start">
-      <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="lat" label="Latitude" type="string" defaultValue="42" />
-          <camunda:formField id="lon" label="Longitude" type="string" defaultValue="72" />
-        </camunda:formData>
-      </bpmn:extensionElements>
-      <bpmn:outgoing>Flow_0h1c5x5</bpmn:outgoing>
-    </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_0h1c5x5" sourceRef="StartEvent_1" targetRef="Activity_02bbqmi" />
-    <bpmn:endEvent id="Event_1ne92b0" name="end">
-      <bpmn:incoming>Flow_1gvdgxc</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:serviceTask id="Activity_02bbqmi" name="send request">
+    <bpmn:sequenceFlow id="Flow_0h1c5x5" sourceRef="StartEvent_1" targetRef="Activity_030ghhn" />
+    <bpmn:serviceTask id="Activity_030ghhn" name="get coordinates">
       <bpmn:extensionElements>
         <camunda:connector>
           <camunda:inputOutput>
-            <camunda:inputParameter name="url">https://api.openweathermap.org/data/2.5/weather?lat=${lat}&amp;lon=${lon}&amp;appid=f350db2bd88588efbe929a3adedf926e</camunda:inputParameter>
+            <camunda:inputParameter name="url">http://api.openweathermap.org/geo/1.0/direct?q=${location}&amp;limit=1&amp;appid=f350db2bd88588efbe929a3adedf926e</camunda:inputParameter>
             <camunda:inputParameter name="method">GET</camunda:inputParameter>
             <camunda:outputParameter name="web_output">${response}</camunda:outputParameter>
           </camunda:inputOutput>
@@ -30,39 +18,88 @@
         </camunda:connector>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0h1c5x5</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qb8pne</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:scriptTask id="Activity_1nrekgz" name="extract coordinates" scriptFormat="javascript">
+      <bpmn:incoming>Flow_1qb8pne</bpmn:incoming>
+      <bpmn:outgoing>Flow_08b5esk</bpmn:outgoing>
+      <bpmn:script>var webOutputJson = JSON.parse(web_output);
+
+// Extract the desired property
+var lat = webOutputJson[0].lat;
+var lon = webOutputJson[0].lon
+
+execution.setVariable("lat", lat);
+execution.setVariable("lon", lon);</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="Flow_1qb8pne" sourceRef="Activity_030ghhn" targetRef="Activity_1nrekgz" />
+    <bpmn:sequenceFlow id="Flow_08b5esk" sourceRef="Activity_1nrekgz" targetRef="Activity_02bbqmi" />
+    <bpmn:serviceTask id="Activity_02bbqmi" name="ask for weather">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">https://api.openweathermap.org/data/2.5/weather?lat=${lat}&amp;lon=${lon}&amp;appid=f350db2bd88588efbe929a3adedf926e</camunda:inputParameter>
+            <camunda:inputParameter name="method">GET</camunda:inputParameter>
+            <camunda:outputParameter name="responseVariable">${response}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_08b5esk</bpmn:incoming>
       <bpmn:outgoing>Flow_1gvdgxc</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:startEvent id="StartEvent_1" name="start">
+      <bpmn:extensionElements />
+      <bpmn:outgoing>Flow_0h1c5x5</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_1ne92b0" name="end">
+      <bpmn:incoming>Flow_1gvdgxc</bpmn:incoming>
+    </bpmn:endEvent>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1ca8pj6">
       <bpmndi:BPMNShape id="Participant_0ywga0l_di" bpmnElement="SendWebRequest" isHorizontal="true">
-        <dc:Bounds x="172" y="85" width="746" height="250" />
+        <dc:Bounds x="172" y="85" width="1108" height="335" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_030ghhn_di" bpmnElement="Activity_030ghhn">
+        <dc:Bounds x="370" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1nrekgz_di" bpmnElement="Activity_1nrekgz">
+        <dc:Bounds x="550" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02bbqmi_di" bpmnElement="Activity_02bbqmi">
+        <dc:Bounds x="740" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-        <dc:Bounds x="262" y="192" width="36" height="36" />
+        <dc:Bounds x="252" y="212" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="269" y="235" width="22" height="14" />
+          <dc:Bounds x="259" y="255" width="22" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1ne92b0_di" bpmnElement="Event_1ne92b0">
-        <dc:Bounds x="842" y="182" width="36" height="36" />
+        <dc:Bounds x="972" y="192" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="851" y="225" width="19" height="14" />
+          <dc:Bounds x="981" y="235" width="19" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_02bbqmi_di" bpmnElement="Activity_02bbqmi">
-        <dc:Bounds x="510" y="160" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0h1c5x5_di" bpmnElement="Flow_0h1c5x5">
-        <di:waypoint x="298" y="210" />
-        <di:waypoint x="344" y="210" />
-        <di:waypoint x="344" y="200" />
-        <di:waypoint x="510" y="200" />
+        <di:waypoint x="288" y="230" />
+        <di:waypoint x="370" y="230" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1gvdgxc_di" bpmnElement="Flow_1gvdgxc">
-        <di:waypoint x="610" y="200" />
-        <di:waypoint x="842" y="200" />
+        <di:waypoint x="840" y="210" />
+        <di:waypoint x="972" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qb8pne_di" bpmnElement="Flow_1qb8pne">
+        <di:waypoint x="470" y="210" />
+        <di:waypoint x="550" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08b5esk_di" bpmnElement="Flow_08b5esk">
+        <di:waypoint x="650" y="210" />
+        <di:waypoint x="740" y="210" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
