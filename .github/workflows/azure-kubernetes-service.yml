@@ -98,6 +98,6 @@ jobs:
           sleep 10
 
           echo "Deploying camunda bpmn into pod"
-          camundaPod=kubectl get pods | grep 'soemi-moen' | awk 'print $1'
+          camundaPod=$(kubectl get pods | grep 'soemi-moen' | awk 'print $1')
           kubectl port-forward camundaPod 8080:8080
           curl -w "\n" -H "Content-Type: multipart/form-data" -F "deployment-name=soemi-moen-bpmn" -F "enable-duplicate-filtering=true" -F "deploy-changed-only=true" -F "deployment-source=process application" -F "data=@./soemi-moen/soemi-moen.bpmn" http://localhost:8080/engine-rest/deployment/create
