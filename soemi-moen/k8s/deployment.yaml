@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: soemi-moen
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: soemi-moen
+  template:
+    metadata:
+      labels:
+        app: soemi-moen
+    spec:
+      containers:
+        - name: soemi-moen
+          image: camunda/camunda-bpm-platform:run-latest
+          ports:
+            - containerPort: 8080

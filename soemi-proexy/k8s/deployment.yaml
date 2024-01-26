@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: soemi-proexy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: soemi-proexy
+  template:
+    metadata:
+      labels:
+        app: soemi-proexy
+    spec:
+      containers:
+        - name: soemi-proexy
+          image: z100/soemi-proexy:$IMAGE_TAG
+          ports:
+            - containerPort: 8080

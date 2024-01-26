@@ -25,7 +25,6 @@ jobs:
 
       - name: Get Short Commit SHA
         run: |
-          echo "COMMIT_SHA_SHORT=$(echo ${{ github.sha }} | cut -c1-7)"
           echo "COMMIT_SHA_SHORT=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
 
       - name: Build docker images
@@ -33,6 +32,7 @@ jobs:
           echo "Building images"
           docker build -t z100/soemi-woeb:${{ env.COMMIT_SHA_SHORT }} ./soemi-woeb
           docker build -t z100/soemi-woers:${{ env.COMMIT_SHA_SHORT }} ./soemi-woers
+          docker build -t z100/soemi-proexy:${{ env.COMMIT_SHA_SHORT }} ./soemi-proexy
 
       - name: Push docker images
         run: |
@@ -42,6 +42,7 @@ jobs:
           echo "Pushing images"
           docker push z100/soemi-woeb:${{ env.COMMIT_SHA_SHORT }}
           docker push z100/soemi-woers:${{ env.COMMIT_SHA_SHORT }}
+          docker push z100/soemi-proexy:${{ env.COMMIT_SHA_SHORT }}
 
   deploy-services:
     permissions:
@@ -57,13 +58,13 @@ jobs:
 
       - name: Get Short Commit SHA
         run: |
-          echo "COMMIT_SHA_SHORT=$(echo ${{ github.sha }} | cut -c1-7)"
           echo "COMMIT_SHA_SHORT=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
 
       - name: Populate deployment.yaml with vars
         run: |
           sed -i "s|\$IMAGE_TAG|${{ env.COMMIT_SHA_SHORT }}|g" ./soemi-woeb/k8s/deployment.yaml
           sed -i "s|\$IMAGE_TAG|${{ env.COMMIT_SHA_SHORT }}|g" ./soemi-woers/k8s/deployment.yaml
+          sed -i "s|\$IMAGE_TAG|${{ env.COMMIT_SHA_SHORT }}|g" ./soemi-proexy/k8s/deployment.yaml
 
       - name: Azure login
         uses: azure/login@v1.4.6
@@ -86,5 +87,23 @@ jobs:
       - name: Deploy microservices to AKS
         run: |
           echo "Deploying services"
+          kubectl replace --force -f ./soemi-moen/k8s
+          kubectl replace --force -f ./soemi-proexy/k8s
           kubectl replace --force -f ./soemi-woeb/k8s
           kubectl replace --force -f ./soemi-woers/k8s
+
+      - name: Deploy process into camunda
+        run: |
+          echo "Sleeping for 10 to wait for pod"
+          sleep 10
+
+          echo "Forwarding port"
+          camundaPod=$(kubectl get pods | grep 'soemi-moen' | awk '{print $1}')
+          kubectl port-forward $camundaPod 8080:8080 &
+          sleep 5
+          
+          echo "Deploying camunda bpmn into pod"
+          curl -w "\n" -H "Content-Type: multipart/form-data" -F "deployment-name=soemi-moen-bpmn" -F "enable-duplicate-filtering=true" -F "deploy-changed-only=true" -F "deployment-source=process application" -F "data=@./soemi-moen/soemi-moen.bpmn" http://localhost:8080/engine-rest/deployment/create
+
+          echo "Killing port-forwarding"
+          pkill -f "kubectl port-forward"

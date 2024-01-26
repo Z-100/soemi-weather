@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: soemi-proexy
+spec:
+  selector:
+    app: soemi-proexy
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
