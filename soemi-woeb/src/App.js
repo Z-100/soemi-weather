@@ -5,11 +5,49 @@ function App() {
     const [location, setLocation] = useState('');
     const [planet, setPlanet] = useState(null)
 
-    const handleRestCall = () => {
-        fetch(`http://sömi-weather.ch/api/get-the-star-wars-planets-mapping-for-the-current-temperature-completely-and-utterly-accurate?temp=${location}`)
-            .then((response) => response.json())
-            .then((data) => setPlanet(data))
-            .catch((error) => console.error(error));
+    const handleRestCall = async () => {
+        const temp = await getTemp();
+        const imgRes = await fetch(`http://sömi-weather.ch/api/get-the-star-wars-planets-mapping-for-the-current-temperature-completely-and-utterly-accurate?temp=${temp}`)
+        const imgJson = await imgRes.json();
+
+        setPlanet(imgJson);
+    };
+
+    const getTemp = async () => {
+        const res = await fetch(`http://localhost:8080/engine-rest/process-definition/key/Process_13h4fbi/start`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(
+                {
+                    "businessKey": "yourBusinessKey",
+                    "variables": {
+                        "location": {"value": location, "type": "String"}
+                    }
+                }
+            )
+        });
+        const json = await res.json();
+        const id = await json.id;
+
+        for(let i = 0; i < 10; i++)
+        {
+            await delay(500);
+            try
+            {
+                const varRes = await fetch(`http://localhost:8080/engine-rest/history/variable-instance?processInstanceId=${id}&variableName=temp`)
+                const varJson = await varRes.json();
+                const temp = varJson.value;
+
+                return temp;               
+            }
+            catch (err)
+            {
+                console.log(err);
+                console.log("retrying");
+            }
+        }
     };
 
     return (
@@ -25,6 +63,13 @@ function App() {
         </div>
     );
 }
+
+function delay(time) {
+    return new Promise((resolve) => {
+        setTimeout(() => resolve(), time);
+    });
+}
+
 
 export function Planet({ planet }) {
     const {name, image} = planet
