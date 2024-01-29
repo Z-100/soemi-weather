@@ -3,5 +3,5 @@ curl -w "\n" -H "Content-Type: multipart/form-data" -X POST \
   -F "enable-duplicate-filtering=true" \
   -F "deploy-changed-only=false" \
   -F "data=@/home/flurin/soemi-weather/soemi-moen/soemi-moen.bpmn" \
-  http://localhost:8080/engine-rest/deployment/create
+  http://xn--smi-weather-rfb.ch/moenengine-rest/deployment/create
 

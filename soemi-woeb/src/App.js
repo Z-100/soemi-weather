@@ -14,7 +14,7 @@ function App() {
     };
 
     const getTemp = async () => {
-        const res = await fetch(`http://localhost:8080/engine-rest/process-definition/key/Process_13h4fbi/start`, {
+        const res = await fetch(`http://xn--smi-weather-rfb.ch/moen/engine-rest/process-definition/key/Process_13h4fbi/start`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -36,7 +36,7 @@ function App() {
             await delay(500);
             try
             {
-                const varRes = await fetch(`http://localhost:8080/engine-rest/history/variable-instance?processInstanceId=${id}&variableName=temp`)
+                const varRes = await fetch(`http://xn--smi-weather-rfb.ch/moen/engine-rest/history/variable-instance?processInstanceId=${id}&variableName=temp`)
                 const varJson = await varRes.json();
                 const temp = varJson.value;
 
