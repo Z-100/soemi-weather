@@ -91,7 +91,7 @@ export function Planet({ planet }) {
     return (
         <>
             <h1>Name: {name}</h1>
-            <img src={image} alt="Star Wars Planet" style={"width: 50%"}/>
+            <img src={image} alt="Star Wars Planet" style={{width: '50%'}}/>
         </>
     );
 }
