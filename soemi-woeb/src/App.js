@@ -6,12 +6,19 @@ function App() {
     const [planet, setPlanet] = useState(null)
 
     const handleRestCall = async () => {
-        const temp = await getTemp();
-        const imgRes = await fetch(`http://sömi-weather.ch/api/get-the-star-wars-planets-mapping-for-the-current-temperature-completely-and-utterly-accurate?temp=${temp}`)
-        console.log(imgRes);
-        const imgJson = await imgRes.json();
-        console.log(imgJson);
-        setPlanet(imgJson);
+        $("body").css("cursor", "progress");
+        try {
+            const temp = await getTemp();
+            const imgRes = await fetch(`http://sömi-weather.ch/api/get-the-star-wars-planets-mapping-for-the-current-temperature-completely-and-utterly-accurate?temp=${temp}`)
+            console.log(imgRes);
+            const imgJson = await imgRes.json();
+            console.log(imgJson);
+            setPlanet(imgJson);
+        } catch (error) {
+            console.log("error")
+        }finally{
+            $("body").css("cursor", "default");
+        }
     };
 
     const getTemp = async () => {
@@ -84,7 +91,7 @@ export function Planet({ planet }) {
     return (
         <>
             <h1>Name: {name}</h1>
-            <img src={image} alt="Star Wars Planet"/>
+            <img src={image} alt="Star Wars Planet" style="width: 50%;"/>
         </>
     );
 }
