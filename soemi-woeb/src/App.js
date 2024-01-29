@@ -6,7 +6,7 @@ function App() {
     const [planet, setPlanet] = useState(null)
 
     const handleRestCall = async () => {
-        $("body").css("cursor", "progress");
+        document.body.style.cursor = 'wait';
         try {
             const temp = await getTemp();
             const imgRes = await fetch(`http://sömi-weather.ch/api/get-the-star-wars-planets-mapping-for-the-current-temperature-completely-and-utterly-accurate?temp=${temp}`)
@@ -17,7 +17,7 @@ function App() {
         } catch (error) {
             console.log("error")
         }finally{
-            $("body").css("cursor", "default");
+            document.body.style.cursor = 'default'
         }
     };
 
