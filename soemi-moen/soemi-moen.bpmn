@@ -35,20 +35,6 @@ execution.setVariable("lon", lon);</bpmn:script>
     <bpmn:sequenceFlow id="Flow_08b5esk" sourceRef="Activity_1nrekgz" targetRef="Activity_02bbqmi" />
     <bpmn:sequenceFlow id="Flow_1m419sa" sourceRef="Activity_02bbqmi" targetRef="Activity_0tafzgr" />
     <bpmn:sequenceFlow id="Flow_03ix5a2" sourceRef="Activity_0tafzgr" targetRef="Event_1ne92b0" />
-    <bpmn:serviceTask id="Activity_02bbqmi" name="ask for weather">
-      <bpmn:extensionElements>
-        <camunda:connector>
-          <camunda:inputOutput>
-            <camunda:inputParameter name="url">https://api.openweathermap.org/data/2.5/weather?lat=${lat}&amp;lon=${lon}&amp;appid=f350db2bd88588efbe929a3adedf926e</camunda:inputParameter>
-            <camunda:inputParameter name="method">GET</camunda:inputParameter>
-            <camunda:outputParameter name="weatherResponse">${response}</camunda:outputParameter>
-          </camunda:inputOutput>
-          <camunda:connectorId>http-connector</camunda:connectorId>
-        </camunda:connector>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_08b5esk</bpmn:incoming>
-      <bpmn:outgoing>Flow_1m419sa</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:scriptTask id="Activity_0tafzgr" name="extract temp" scriptFormat="javascript">
       <bpmn:incoming>Flow_1m419sa</bpmn:incoming>
       <bpmn:outgoing>Flow_03ix5a2</bpmn:outgoing>
@@ -81,6 +67,20 @@ execution.setVariable("temp", temp);</bpmn:script>
       <bpmn:extensionElements />
       <bpmn:outgoing>Flow_0h1c5x5</bpmn:outgoing>
     </bpmn:startEvent>
+    <bpmn:serviceTask id="Activity_02bbqmi" name="ask for weather">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">https://api.openweathermap.org/data/2.5/weather?lat=${lat}&amp;lon=${lon}&amp;units=metric&amp;appid=f350db2bd88588efbe929a3adedf926e</camunda:inputParameter>
+            <camunda:inputParameter name="method">GET</camunda:inputParameter>
+            <camunda:outputParameter name="weatherResponse">${response}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_08b5esk</bpmn:incoming>
+      <bpmn:outgoing>Flow_1m419sa</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1ca8pj6">
@@ -93,10 +93,6 @@ execution.setVariable("temp", temp);</bpmn:script>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1nrekgz_di" bpmnElement="Activity_1nrekgz">
         <dc:Bounds x="550" y="170" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_02bbqmi_di" bpmnElement="Activity_02bbqmi">
-        <dc:Bounds x="530" y="310" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0tafzgr_di" bpmnElement="Activity_0tafzgr">
@@ -119,6 +115,10 @@ execution.setVariable("temp", temp);</bpmn:script>
           <dc:Bounds x="259" y="235" width="22" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02bbqmi_di" bpmnElement="Activity_02bbqmi">
+        <dc:Bounds x="550" y="310" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0h1c5x5_di" bpmnElement="Flow_0h1c5x5">
         <di:waypoint x="288" y="210" />
         <di:waypoint x="370" y="210" />
@@ -132,7 +132,7 @@ execution.setVariable("temp", temp);</bpmn:script>
         <di:waypoint x="600" y="310" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1m419sa_di" bpmnElement="Flow_1m419sa">
-        <di:waypoint x="630" y="350" />
+        <di:waypoint x="650" y="350" />
         <di:waypoint x="790" y="350" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_03ix5a2_di" bpmnElement="Flow_03ix5a2">

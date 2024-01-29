@@ -44,7 +44,7 @@ function App() {
                 console.log(varRes);
                 const varJson = await varRes.json();
                 console.log(varJson);
-                const temp = varJson.value;
+                const temp = varJson[0].value;
                 console.log(temp);
 
                 return temp;               
