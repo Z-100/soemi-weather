@@ -15,9 +15,9 @@ function App() {
             console.log(imgJson);
             setPlanet(imgJson);
         } catch (error) {
-            console.log("error")
+            console.log(error);
         }finally{
-            document.body.style.cursor = 'default'
+            document.body.style.cursor = 'default';
         }
     };
 
@@ -91,7 +91,7 @@ export function Planet({ planet }) {
     return (
         <>
             <h1>Name: {name}</h1>
-            <img src={image} alt="Star Wars Planet" style="width: 50%;"/>
+            <img src={image} alt="Star Wars Planet" style={"width: 50%"}/>
         </>
     );
 }
