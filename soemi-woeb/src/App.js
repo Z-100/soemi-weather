@@ -8,8 +8,9 @@ function App() {
     const handleRestCall = async () => {
         const temp = await getTemp();
         const imgRes = await fetch(`http://sömi-weather.ch/api/get-the-star-wars-planets-mapping-for-the-current-temperature-completely-and-utterly-accurate?temp=${temp}`)
+        console.log(imgRes);
         const imgJson = await imgRes.json();
-
+        console.log(imgJson);
         setPlanet(imgJson);
     };
 
@@ -28,8 +29,11 @@ function App() {
                 }
             )
         });
+        console.log(res);
         const json = await res.json();
+        console.log(json);
         const id = await json.id;
+        console.log(id);
 
         for(let i = 0; i < 10; i++)
         {
@@ -37,8 +41,11 @@ function App() {
             try
             {
                 const varRes = await fetch(`http://xn--smi-weather-rfb.ch/moen/engine-rest/history/variable-instance?processInstanceId=${id}&variableName=temp`)
+                console.log(varRes);
                 const varJson = await varRes.json();
+                console.log(varJson);
                 const temp = varJson.value;
+                console.log(temp);
 
                 return temp;               
             }
